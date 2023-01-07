@@ -1,0 +1,22 @@
+[
+  {
+    "product": "product2",
+    "value": 1000
+  },
+  {
+    "product": "product1",
+    "value": 1500
+  },
+  {
+    "product": "product1",
+    "value": 1000
+  },
+  {
+    "product": "product2",
+    "value": 1300
+  },
+  {
+    "product": "product5",
+    "value": 1000
+  }
+]
