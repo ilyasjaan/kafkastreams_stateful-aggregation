@@ -45,12 +45,8 @@ For this we can go inside the kafka container that we just started.
 First list the container by using the below command and then use that ID in next command to get in.
 
 ```shell
-    docker ps - a
-```
 
-```shell
-
-   docker exec -it CONTAINER_ID /bin/bash
+   docker exec -ti local_kafka_docker /bin/bash
    
    # Try listing topics
    /usr/bin/kafka-topics --list --bootstrap-server localhost:29092
@@ -59,26 +55,26 @@ First list the container by using the below command and then use that ID in next
    __consumer_offsets
    notifications-events-v1
    sales-events-v1
-   spring-boot-streams-KSTREAM-AGGREGATE-STATE-STORE-0000000002-changelog
-   spring-boot-streams-KSTREAM-AGGREGATE-STATE-STORE-0000000002-repartition
+   spring-boot-streams-PRODUCT_AGGREGATED_SALES-changelog
+   spring-boot-streams-PRODUCT_AGGREGATED_SALES-repartition
 
 ```
 
 ### Step 4:: Register a notification consumer to see notification events (as per example)
 
 ```shell
-  docker exec -it CONTAINER_ID /bin/bash
+  docker exec -ti local_kafka_docker /bin/bash
     
   /usr/bin/kafka-console-consumer \
     --bootstrap-server localhost:29092 \
-    --topic sales-events-v1 \
+    --topic notifications-events-v1 \
     --from-beginning
 ```
 
 ### Step 5:: Publish messages to the sales-events-v1 topic to see aggregation
 ```shell
 
-   docker exec -it CONTAINER_ID /bin/bash
+  docker exec -ti local_kafka_docker /bin/bash
   
   # init producer    
   /usr/bin/kafka-console-producer \
@@ -89,11 +85,11 @@ First list the container by using the below command and then use that ID in next
      
   # once connected simple paste JSON EVENT and enter   
   
-  > { "product": "product2", "value": 1000 } 
-  > { "product": "product1", "value": 1500 } 
-  > { "product": "product1", "value": 1000 } 
-  > { "product": "product2", "value": 1300 } 
-  > { "product": "product5", "value": 1000 } 
+  > product2:{ "product": "product2", "value": 1000 } 
+  > product1:{ "product": "product1", "value": 1500 } 
+  > product1:{ "product": "product1", "value": 1000 } 
+  > product2:{ "product": "product2", "value": 1300 } 
+  > product5:{ "product": "product5", "value": 1000 } 
   
   # Keep checking consumer window
 ```

@@ -9,6 +9,7 @@ services:
       - 22181:2181
   kafka:
     image: confluentinc/cp-kafka:latest
+    container_name: local_kafka_docker
     depends_on:
       - zookeeper
     ports:
@@ -21,8 +22,8 @@ services:
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
   example:
-    image:  kafka-streams-statestores-example:latest
+    image:  docker.io/library/kafka-streams-statestores-example:latest
     depends_on:
       - kafka
     environment:
-      spring.kafka.properties.bootstrap.servers: kafka:9092
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
