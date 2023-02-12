@@ -2,8 +2,8 @@
 This guide is in relation to the contents covered in PART 1 of the series.
 
 We have below articles in this series:
- - [**Kafka Streams Stateful Aggregation Part 1 (Example and Q&A)**](https://medium.com/@MalikMIlyas/kafka-streams-state-stores-part-1-stateful-aggregation-with-example-40bf5a9aafdf)
- - Kafka Streams Stateful Aggregation Part 2 (How to retain/rebuild state on restarts)
+ - [Kafka Streams Stateful Aggregation Part 1 (Example and Q&A)](https://medium.com/@MalikMIlyas/kafka-streams-state-stores-part-1-stateful-aggregation-with-example-40bf5a9aafdf)
+ - [Kafka Streams Stateful Aggregation Part 2 (How to retain/rebuild state on restarts)](https://medium.com/@MalikMIlyas/kafka-streams-stateful-aggregation-part-2-how-to-retain-rebuild-state-on-restarts-37ec3fedd996)
  - Kafka Streams - Stateful Aggregation - Part 3 (Production ready deployment)
  - Kafka Streams Stateful Aggregation Part 4 (Standby Replicas)
 
