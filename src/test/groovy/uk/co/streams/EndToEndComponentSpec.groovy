@@ -48,7 +48,7 @@ class EndToEndComponentSpec extends Specification{
 
     def setupSpec() {
         System.out.println("Setting State Directory To="+stateDir.toAbsolutePath().toString())
-        System.setProperty("spring.kafka.streams.properties..state.dir", stateDir.toAbsolutePath().toString())
+        System.setProperty("spring.kafka.streams.properties.state.dir", stateDir.toAbsolutePath().toString())
     }
 
     def setup() {

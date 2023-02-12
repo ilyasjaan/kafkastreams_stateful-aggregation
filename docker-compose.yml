@@ -1,4 +1,8 @@
 version: '2'
+
+volumes:
+  stateful-aggregation_example:
+
 services:
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
@@ -23,6 +27,9 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
   example:
     image:  docker.io/library/kafka-streams-statestores-example:latest
+    container_name: example
+    volumes:
+      - stateful-aggregation_example:/shared-volume
     depends_on:
       - kafka
     environment:

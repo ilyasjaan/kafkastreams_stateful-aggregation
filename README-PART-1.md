@@ -1,10 +1,11 @@
-# Kafka Streams Stateful Aggregtion Part 1 (Example and Q&A)
+# Kafka Streams Stateful Aggregation Part 1 (Example and Q&A)
 This guide is in relation to the contents covered in PART 1 of the series.
 
 We have below articles in this series:
- - **Kafka Streams Stateful Aggregation Part 1 (Example and Q&A)**
- - Kafka Streams Stateful Aggregation Part 2 (how to retain/rebuild state on restarts)
- - Kafka Streams Stateful Aggregation Part 3 (standby replicas)
+ - [**Kafka Streams Stateful Aggregation Part 1 (Example and Q&A)**](https://medium.com/@MalikMIlyas/kafka-streams-state-stores-part-1-stateful-aggregation-with-example-40bf5a9aafdf)
+ - Kafka Streams Stateful Aggregation Part 2 (How to retain/rebuild state on restarts)
+ - Kafka Streams - Stateful Aggregation - Part 3 (Production ready deployment)
+ - Kafka Streams Stateful Aggregation Part 4 (Standby Replicas)
 
 # Technologies Used
  - Java 17
