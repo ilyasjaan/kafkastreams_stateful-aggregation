@@ -1,7 +1,6 @@
 package uk.co.streams.processor;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.core.type.TypeReference;
 import lombok.AllArgsConstructor;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
@@ -22,42 +21,35 @@ import uk.co.streams.events.SaleEvent;
 @AllArgsConstructor
 public class Processor {
 
-  private ObjectMapper objectMapper;
+    public static final TypeReference<SaleEvent> SALE_EVENT_TYPE = new TypeReference<>() {
+    };
+    public static final JsonDeserializer<SaleEvent> SALE_EVENT_JSON_DESERIALIZER = new JsonDeserializer<>(SALE_EVENT_TYPE);
+    public static final JsonSerializer<SaleEvent> SALE_EVENT_JSON_SERIALIZER = new JsonSerializer<>(SALE_EVENT_TYPE);
 
-  @Autowired
-  public void process(StreamsBuilder builder) {
-    builder
-        .stream("sales-events-v1", Consumed.with(Serdes.String(), Serdes.String()))
-        .groupBy((key, value) -> key, Grouped.with(Serdes.String(), Serdes.String()))
-        .aggregate(
-            () -> 0L,
-            this::aggregate,
-            Materialized.<String, Long, KeyValueStore<Bytes, byte[]>>as("PRODUCT_AGGREGATED_SALES")
-                .withKeySerde(Serdes.String())
-                .withValueSerde(Serdes.Long())
-                .withCachingDisabled()
-        )
-        .filter((product, salesValue) -> salesValue >= 2000)
-        .mapValues(((key, value) -> new NotificationEvent(key, value)))
-        .toStream()
-        .peek(((key, value) -> {
-          System.out.println("Notifying Product ->"+key+" --> Sale Value=:"+value);
-        }))
-        .to("notifications-events-v1", Produced.with(
-            Serdes.String(),
-            Serdes.serdeFrom(new JsonSerializer<NotificationEvent>(), new JsonDeserializer<NotificationEvent>()))
-        );
-  }
-
-  private Long aggregate(String key, String value, Long aggregate) {
-    System.out.println("KEY=::"+key);
-    try {
-      SaleEvent saleEvent = objectMapper.readValue(value, SaleEvent.class);
-      return aggregate + saleEvent.getValue();
-    } catch (JsonProcessingException e) {
-      // Ignore this event
-      return aggregate;
+    @Autowired
+    public void process(StreamsBuilder builder) {
+        builder
+                .stream("sales-events-v1", Consumed.with(Serdes.String(), Serdes.serdeFrom(SALE_EVENT_JSON_SERIALIZER, SALE_EVENT_JSON_DESERIALIZER)))
+                .groupBy((key, value) -> key, Grouped.with(Serdes.String(), Serdes.serdeFrom(SALE_EVENT_JSON_SERIALIZER, SALE_EVENT_JSON_DESERIALIZER)))
+                .aggregate(
+                        () -> 0L,
+                        this::aggregate,
+                        Materialized.<String, Long, KeyValueStore<Bytes, byte[]>>as("PRODUCT_AGGREGATED_SALES")
+                                .withKeySerde(Serdes.String())
+                                .withValueSerde(Serdes.Long())
+                                .withCachingDisabled()
+                )
+                .filter((product, salesValue) -> salesValue >= 2000)
+                .mapValues(NotificationEvent::new)
+                .toStream()
+                .peek(((key, value) -> System.out.println("Notifying Product ->" + key + " --> Sale Value=:" + value)))
+                .to("notifications-events-v1", Produced.with(
+                        Serdes.String(),
+                        Serdes.serdeFrom(new JsonSerializer<NotificationEvent>(), new JsonDeserializer<NotificationEvent>()))
+                );
     }
-  }
 
+    private Long aggregate(String key, SaleEvent saleEvent, Long aggregate) {
+        return aggregate + saleEvent.getValue();
+    }
 }
