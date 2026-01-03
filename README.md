@@ -135,6 +135,8 @@ For better performance with large datasets, use FULLTEXT indexes:
 
 ```sql
 -- Create a FULLTEXT index on the product_name column
+-- Note: Requires InnoDB (MySQL 5.6+) or MyISAM storage engine
+-- Has minimum word length restrictions (default 3-4 characters)
 ALTER TABLE products 
 ADD FULLTEXT INDEX ft_product_name (product_name);
 
@@ -161,10 +163,12 @@ WHERE SOUNDEX(product_name) = SOUNDEX('product');
 
 ## 5. Levenshtein Distance (Requires Custom Function)
 
-For advanced fuzzy matching based on edit distance, you can create a stored function:
+For advanced fuzzy matching based on edit distance, you need to install a UDF (User Defined Function):
 
 ```sql
--- Example query using Levenshtein distance (function must be defined first)
+-- Note: Levenshtein function requires installation of a custom UDF or stored function
+-- You can use the mysql-udf-levenshtein library or implement a stored function
+-- Example usage after installation:
 SELECT product_name, LEVENSHTEIN(product_name, 'product1') AS distance
 FROM products
 WHERE LEVENSHTEIN(product_name, 'product1') <= 3
@@ -180,7 +184,7 @@ Use REGEXP for pattern-based searches:
 SELECT * FROM products 
 WHERE product_name REGEXP 'product[0-9]+';
 
--- Case-insensitive regex search
+-- Case-sensitive regex search
 SELECT * FROM products 
 WHERE product_name REGEXP BINARY 'product[1-5]';
 ```
